@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBT Examination</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #1b1b1b;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 40px;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    #loginScreen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    h1 {
+      color: #169d53;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+    }
+
+    h2 {
+      color: #169d53;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.2);
+      color: white;
+      font-size: 1.1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #169d53;
+      box-shadow: 0 0 10px rgba(22, 157, 83, 0.3);
+    }
+
+    button {
+      width: 100%;
+      max-width: 400px;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      background-color: #169d53;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #128043;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(22, 157, 83, 0.4);
+    }
+
+    button.secondary {
+      background-color: #df5017;
+    }
+
+    button.secondary:hover {
+      background-color: #c44513;
+      box-shadow: 0 5px 15px rgba(223, 80, 23, 0.4);
+    }
+
+    #quizScreen {
+      display: none;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-info {
+      font-size: 1.2rem;
+      color: #169d53;
+    }
+
+    .timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #df5017;
+    }
+
+    .question-container {
+      margin-bottom: 30px;
+    }
+
+    #questionText {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .option-btn {
+      padding: 15px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .option-btn:hover {
+      background: rgba(22, 157, 83, 0.2);
+      border-color: #169d53;
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .option-btn.selected {
+      background: #169d53;
+      border-color: #169d53;
+    }
+
+    .quiz-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      gap: 20px;
+    }
+
+    .quiz-controls button {
+      max-width: 200px;
+    }
+
+    .progress-container {
+      margin-top: 20px;
+      text-align: center;
+      color: #aaa;
+    }
+
+    #resultScreen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .score-display {
+      font-size: 4rem;
+      font-weight: bold;
+      color: #169d53;
+      margin: 20px 0;
+    }
+
+    .result-message {
+      font-size: 1.5rem;
+      margin-bottom: 40px;
+    }
+
+    .review-section {
+      width: 100%;
+      text-align: left;
+      margin-top: 30px;
+    }
+
+    .review-item {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 5px solid #df5017;
+    }
+
+    .review-question {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .review-wrong {
+      color: #df5017;
+      text-decoration: line-through;
+      margin-bottom: 5px;
+    }
+
+    .review-correct {
+      color: #169d53;
+      font-weight: bold;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="loginScreen" class="container">
+    <h1>SQI CBT System</h1>
+    <p style="margin-bottom: 30px; color: #aaa;">Please enter your details to begin the exam</p>
+
+    <div class="input-group">
+      <input type="text" id="usernameInput" placeholder="Enter full name">
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="matricInput" placeholder="Enter student ID (e.g. 257891)">
+    </div>
+
+    <button onclick="startExam()">Start Examination</button>
+  </div>
+
+
+  <div id="quizScreen" class="container hidden">
+    <div class="quiz-header">
+      <div class="user-info">
+        Student: <span id="displayStudentName"></span>
+      </div>
+      <div class="timer" id="timerDisplay">2:00</div>
+      <!-- Timer display -->
+    </div>
+
+    <div class="question-container">
+      <h2 id="questionNumberDisplay">Question 1</h2>
+      <p id="questionText">Loading question...</p>
+
+      <div class="options-list" id="optionsContainer">
+      </div>
+    </div>
+
+    <div class="progress-container">
+      Question <span id="currentQDisplay">1</span> of <span id="totalQDisplay">10</span>
+    </div>
+
+    <div class="quiz-controls">
+      <button onclick="prevQuestion()" id="prevBtn" class="secondary hidden">Previous</button>
+      <button onclick="nextQuestion()" id="nextBtn">Next</button>
+      <button onclick="submitExam()" id="submitBtn" class="secondary hidden">Submit Exam</button>
+    </div>
+  </div>
+
+
+  <div id="resultScreen" class="container hidden">
+    <h1>Examination Complete</h1>
+    <p>Student: <span id="resultName"></span></p>
+
+    <div class="score-display">
+      <span id="scoreText">0</span> / <span id="totalScoreText">10</span>
+    </div>
+
+    <div class="result-message" id="resultMessage">
+      Good job!
+    </div>
+
+    <button onclick="location.reload()" style="margin-bottom: 30px;">Take Exam Again</button>
+
+    <div class="review-section">
+      <h2 style="color: white; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px;">Corrections
+        Review</h2>
+      <div id="reviewContainer">
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+
+  let questions = [
+    {
+      question: "Which of the following is NOT a JavaScript data type?",
+      options: ["String", "Boolean", "Float", "Number"],
+      answer: 2
+    },
+    {
+      question: "What does HTML stand for?",
+      options: ["Hyper Text Markup Language", "High Tech Modern Language", "Hyperlink and Text Markup Language", "Home Tool Markup Language"],
+      answer: 0
+    },
+    {
+      question: "Which keyword is used to declare a variable that cannot be reassigned?",
+      options: ["var", "let", "const", "static"],
+      answer: 2
+    },
+    {
+      question: "How do you write 'Hello World' in an alert box?",
+      options: ["msgBox('Hello World');", "alertBox('Hello World');", "msg('Hello World');", "alert('Hello World');"],
+      answer: 3
+    },
+    {
+      question: "How do you create a function in JavaScript?",
+      options: ["function:myFunction()", "function = myFunction()", "function myFunction()", "create myFunction()"],
+      answer: 2
+    },
+    {
+      question: "Which method removes the last element from an array?",
+      options: [".shift()", ".pop()", ".remove()", ".splice()"],
+      answer: 1
+    },
+    {
+      question: "What is the correct way to write an IF statement?",
+      options: ["if i = 5 then", "if (i == 5)", "if i == 5", "if i = 5"],
+      answer: 1
+    },
+    {
+      question: "Which array method adds new items to the end of an array?",
+      options: [".push()", ".pop()", ".unshift()", ".append()"],
+      answer: 0
+    },
+    {
+      question: "What will `typeof []` return in JavaScript?",
+      options: ["array", "object", "undefined", "string"],
+      answer: 1
+    },
+    {
+      question: "How can you add a comment in JavaScript?",
+      options: ["<!-- This is a comment -->", "'This is a comment", "// This is a comment", "* This is a comment *"],
+      answer: 2
+    }
+  ]
+
+
+  let currentQuestionIndex = 0
+  let userAnswers = []
+  let timerInterval
+  let timeLeft = 120 // 2 minutes in seconds
+
+
+  let loginScreen = document.getElementById('loginScreen')
+  let quizScreen = document.getElementById('quizScreen')
+  let resultScreen = document.getElementById('resultScreen')
+
+  let usernameInput = document.getElementById('usernameInput')
+  let matricInput = document.getElementById('matricInput')
+
+  let displayStudentName = document.getElementById('displayStudentName')
+  let questionNumberDisplay = document.getElementById('questionNumberDisplay')
+  let questionText = document.getElementById('questionText')
+  let optionsContainer = document.getElementById('optionsContainer')
+  let currentQDisplay = document.getElementById('currentQDisplay')
+  let totalQDisplay = document.getElementById('totalQDisplay')
+  let nextBtn = document.getElementById('nextBtn')
+  let prevBtn = document.getElementById('prevBtn')
+  let submitBtn = document.getElementById('submitBtn')
+  let timerDisplay = document.getElementById('timerDisplay')
+
+  let resultName = document.getElementById('resultName')
+  let scoreText = document.getElementById('scoreText')
+  let totalScoreText = document.getElementById('totalScoreText')
+  let resultMessage = document.getElementById('resultMessage')
+  let reviewContainer = document.getElementById('reviewContainer')
+
+
+
+
+  function startExam() {
+    if (usernameInput.value === '' || matricInput.value === '') {
+      alert("Please enter both Name and Matric Number")
+      return
+    }
+
+    for (let i = 0; i < questions.length; i++) {
+      userAnswers.push(null)
+    }
+
+    displayStudentName.innerHTML = usernameInput.value
+    totalQDisplay.innerHTML = questions.length
+
+    loginScreen.style.display = 'none'
+    quizScreen.style.display = 'block'
+
+
+    loadQuestion()
+
+    startTimer()
+  }
+
+
+  function loadQuestion() {
+    let currentQuestion = questions[currentQuestionIndex]
+
+    questionNumberDisplay.innerHTML = `Question ${currentQuestionIndex + 1}`
+    questionText.innerHTML = currentQuestion.question
+    currentQDisplay.innerHTML = currentQuestionIndex + 1
+
+    optionsContainer.innerHTML = ''
+
+    for (let i = 0; i < currentQuestion.options.length; i++) {
+      let optionText = currentQuestion.options[i]
+
+      optionsContainer.innerHTML += `
+                <button class="option-btn" id="option-${i}" onclick="selectOption(${i})">
+                    ${optionText}
+                </button>
+            `
+    }
+
+    let previousAnswer = userAnswers[currentQuestionIndex]
+    if (previousAnswer !== null) {
+      let selectedBtn = document.getElementById(`option-${previousAnswer}`)
+      selectedBtn.classList.add('selected')
+    }
+
+    if (currentQuestionIndex === 0) {
+      prevBtn.style.display = 'none'
+    } else {
+      prevBtn.style.display = 'block'
+    }
+
+    if (currentQuestionIndex === questions.length - 1) {
+      nextBtn.style.display = 'none'
+      submitBtn.style.display = 'block'
+    } else {
+      nextBtn.style.display = 'block'
+      submitBtn.style.display = 'none'
+    }
+  }
+
+
+  function selectOption(optionIndex) {
+    userAnswers[currentQuestionIndex] = optionIndex
+
+    for (let i = 0; i < questions[currentQuestionIndex].options.length; i++) {
+      let btn = document.getElementById(`option-${i}`)
+      btn.classList.remove('selected')
+    }
+
+    let clickedBtn = document.getElementById(`option-${optionIndex}`)
+    clickedBtn.classList.add('selected')
+  }
+
+
+  function nextQuestion() {
+    currentQuestionIndex++
+    loadQuestion()
+  }
+
+  function prevQuestion() {
+    currentQuestionIndex--
+    loadQuestion()
+  }
+
+
+  function submitExam() {
+    let confirmSubmit = confirm("Are you sure you want to submit? You cannot change your answers after this.")
+
+    if (confirmSubmit === false) {
+      return
+    }
+
+    finishExam()
+  }
+
+  function finishExam() {
+    clearInterval(timerInterval)
+    let score = 0
+
+    for (let i = 0; i < questions.length; i++) {
+      if (userAnswers[i] === questions[i].answer) {
+        score++
+      }
+    }
+
+    quizScreen.style.display = 'none'
+    resultScreen.style.display = 'flex'
+
+    // Display results
+    resultName.innerHTML = usernameInput.value
+    scoreText.innerHTML = score
+    totalScoreText.innerHTML = questions.length
+
+    let percentage = (score / questions.length) * 100
+
+    if (percentage >= 80) {
+      resultMessage.innerHTML = "Excellent performance! 🌟"
+      resultMessage.style.color = "#169d53"
+    } else if (percentage >= 50) {
+      resultMessage.innerHTML = "Good job. You passed! 👍"
+      resultMessage.style.color = "white"
+    } else {
+      resultMessage.innerHTML = "You need to study harder! 📚"
+      resultMessage.style.color = "#df5017"
+    }
+
+    generateCorrections()
+  }
+
+
+  function generateCorrections() {
+    reviewContainer.innerHTML = ''
+
+    for (let i = 0; i < questions.length; i++) {
+      let q = questions[i]
+      let userAnswerIndex = userAnswers[i]
+      let correctAnswerIndex = q.answer
+
+      if (userAnswerIndex !== correctAnswerIndex) {
+
+        let userChoiceText = userAnswerIndex !== null ? q.options[userAnswerIndex] : "No Answer Selected"
+        let correctChoiceText = q.options[correctAnswerIndex]
+
+        reviewContainer.innerHTML += `
+                    <div class="review-item">
+                        <div class="review-question">Q${i + 1}: ${q.question}</div>
+                        <div class="review-wrong">Your answer: ${userChoiceText}</div>
+                        <div class="review-correct">Correct answer: ${correctChoiceText}</div>
+                    </div>
+                `
+      }
+    }
+
+    if (reviewContainer.innerHTML === '') {
+      reviewContainer.innerHTML = `<p style="padding: 20px; color: #169d53;">Perfect score! No corrections needed.</p>`
+    }
+  }
+
+
+  function startTimer() {
+    timerInterval = setInterval(function () {
+      timeLeft--
+
+      let minutes = Math.floor(timeLeft / 60)
+      let seconds = timeLeft % 60
+
+      let secondsText = seconds < 10 ? '0' + seconds : seconds
+
+      timerDisplay.innerHTML = `${minutes}:${secondsText}`
+
+      if (timeLeft <= 60) {
+        timerDisplay.style.color = 'red'
+
+        if (timeLeft % 2 === 0) {
+          timerDisplay.style.opacity = '1'
+        } else {
+          timerDisplay.style.opacity = '0.5'
+        }
+      }
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval)
+        alert("Time is up! Submitting your exam automatically.")
+        finishExam()
+      }
+
+    }, 1000)
+  }
+
+</script>
+
+</html>
